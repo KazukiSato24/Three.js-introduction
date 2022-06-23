@@ -17,35 +17,27 @@ class USDZExporter {
 
 		scene.traverseVisible( ( object ) => {
 
-			if ( object.isMesh ) {
+			if ( object.isMesh && object.material.isMeshStandardMaterial ) {
 
-				if ( object.material.isMeshStandardMaterial ) {
+				const geometry = object.geometry;
+				const material = object.material;
 
-					const geometry = object.geometry;
-					const material = object.material;
+				const geometryFileName = 'geometries/Geometry_' + geometry.id + '.usd';
 
-					const geometryFileName = 'geometries/Geometry_' + geometry.id + '.usd';
+				if ( ! ( geometryFileName in files ) ) {
 
-					if ( ! ( geometryFileName in files ) ) {
-
-						const meshObject = buildMeshObject( geometry );
-						files[ geometryFileName ] = buildUSDFileAsString( meshObject );
-
-					}
-
-					if ( ! ( material.uuid in materials ) ) {
-
-						materials[ material.uuid ] = material;
-
-					}
-
-					output += buildXform( object, geometry, material );
-
-				} else {
-
-					console.warn( 'THREE.USDZExporter: Unsupported material type (USDZ only supports MeshStandardMaterial)', object );
+					const meshObject = buildMeshObject( geometry );
+					files[ geometryFileName ] = buildUSDFileAsString( meshObject );
 
 				}
+
+				if ( ! ( material.uuid in materials ) ) {
+
+					materials[ material.uuid ] = material;
+
+				}
+
+				output += buildXform( object, geometry, material );
 
 			}
 
@@ -402,7 +394,6 @@ function buildMaterial( material, textures ) {
             float outputs:g
             float outputs:b
             float3 outputs:rgb
-            ${ material.transparent || material.alphaTest > 0.0 ? 'float outputs:a' : '' }
         }`;
 
 	}
@@ -410,17 +401,6 @@ function buildMaterial( material, textures ) {
 	if ( material.map !== null ) {
 
 		inputs.push( `${ pad }color3f inputs:diffuseColor.connect = </Materials/Material_${ material.id }/Texture_${ material.map.id }_diffuse.outputs:rgb>` );
-
-		if ( material.transparent ) {
-
-			inputs.push( `${ pad }float inputs:opacity.connect = </Materials/Material_${ material.id }/Texture_${ material.map.id }_diffuse.outputs:a>` );
-
-		} else if ( material.alphaTest > 0.0 ) {
-
-			inputs.push( `${ pad }float inputs:opacity.connect = </Materials/Material_${ material.id }/Texture_${ material.map.id }_diffuse.outputs:a>` );
-			inputs.push( `${ pad }float inputs:opacityThreshold = ${material.alphaTest}` );
-
-		}
 
 		samplers.push( buildTexture( material.map, 'diffuse', material.color ) );
 

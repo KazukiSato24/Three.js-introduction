@@ -2,7 +2,7 @@ import {
 	BufferGeometry,
 	Float32BufferAttribute,
 	Vector3
-} from 'three';
+} from '../../../build/three.module.js';
 import * as BufferGeometryUtils from '../utils/BufferGeometryUtils.js';
 
 /**
@@ -17,7 +17,24 @@ const _cb = new Vector3(), _ab = new Vector3();
 
 class SimplifyModifier {
 
+	constructor() {
+
+		if ( BufferGeometryUtils === undefined ) {
+
+			throw 'THREE.SimplifyModifier relies on BufferGeometryUtils';
+
+		}
+
+	}
+
 	modify( geometry, count ) {
+
+		if ( geometry.isGeometry === true ) {
+
+			console.error( 'THREE.SimplifyModifier no longer supports Geometry. Use BufferGeometry instead.' );
+			return;
+
+		}
 
 		geometry = geometry.clone();
 		const attributes = geometry.attributes;
@@ -157,7 +174,7 @@ function pushIfUnique( array, object ) {
 
 function removeFromArray( array, object ) {
 
-	const k = array.indexOf( object );
+	var k = array.indexOf( object );
 	if ( k > - 1 ) array.splice( k, 1 );
 
 }

@@ -2,7 +2,7 @@ import {
 	Matrix4,
 	Mesh,
 	MeshBasicMaterial
-} from 'three';
+} from '../../../build/three.module.js';
 
 /**
  * A shadow Mesh that follows a shadow-casting Mesh in the scene, but is confined to a single plane.
@@ -24,8 +24,6 @@ class ShadowMesh extends Mesh {
 		} );
 
 		super( mesh.geometry, shadowMaterial );
-
-		this.isShadowMesh = true;
 
 		this.meshMatrix = mesh.matrixWorld;
 
@@ -70,5 +68,7 @@ class ShadowMesh extends Mesh {
 	}
 
 }
+
+ShadowMesh.prototype.isShadowMesh = true;
 
 export { ShadowMesh };

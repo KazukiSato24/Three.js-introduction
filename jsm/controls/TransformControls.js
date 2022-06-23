@@ -18,7 +18,7 @@ import {
 	SphereGeometry,
 	TorusGeometry,
 	Vector3
-} from 'three';
+} from '../../../build/three.module.js';
 
 const _raycaster = new Raycaster();
 
@@ -48,8 +48,6 @@ class TransformControls extends Object3D {
 			domElement = document;
 
 		}
-
-		this.isTransformControls = true;
 
 		this.visible = false;
 		this.domElement = domElement;
@@ -566,25 +564,6 @@ class TransformControls extends Object3D {
 
 	}
 
-	reset() {
-
-		if ( ! this.enabled ) return;
-
-		if ( this.dragging ) {
-
-			this.object.position.copy( this._positionStart );
-			this.object.quaternion.copy( this._quaternionStart );
-			this.object.scale.copy( this._scaleStart );
-
-			this.dispatchEvent( _changeEvent );
-			this.dispatchEvent( _objectChangeEvent );
-
-			this.pointStart.copy( this.pointEnd );
-
-		}
-
-	}
-
 	getRaycaster() {
 
 		return _raycaster;
@@ -643,6 +622,8 @@ class TransformControls extends Object3D {
 
 }
 
+TransformControls.prototype.isTransformControls = true;
+
 // mouse / touch event handlers
 
 function getPointer( event ) {
@@ -688,11 +669,7 @@ function onPointerDown( event ) {
 
 	if ( ! this.enabled ) return;
 
-	if ( ! document.pointerLockElement ) {
-
-		this.domElement.setPointerCapture( event.pointerId );
-
-	}
+	this.domElement.setPointerCapture( event.pointerId );
 
 	this.domElement.addEventListener( 'pointermove', this._onPointerMove );
 
@@ -765,8 +742,6 @@ class TransformControlsGizmo extends Object3D {
 	constructor() {
 
 		super();
-
-		this.isTransformControlsGizmo = true;
 
 		this.type = 'TransformControlsGizmo';
 
@@ -1458,6 +1433,8 @@ class TransformControlsGizmo extends Object3D {
 
 }
 
+TransformControlsGizmo.prototype.isTransformControlsGizmo = true;
+
 //
 
 class TransformControlsPlane extends Mesh {
@@ -1468,8 +1445,6 @@ class TransformControlsPlane extends Mesh {
 			new PlaneGeometry( 100000, 100000, 2, 2 ),
 			new MeshBasicMaterial( { visible: false, wireframe: true, side: DoubleSide, transparent: true, opacity: 0.1, toneMapped: false } )
 		);
-
-		this.isTransformControlsPlane = true;
 
 		this.type = 'TransformControlsPlane';
 
@@ -1552,5 +1527,7 @@ class TransformControlsPlane extends Mesh {
 	}
 
 }
+
+TransformControlsPlane.prototype.isTransformControlsPlane = true;
 
 export { TransformControls, TransformControlsGizmo, TransformControlsPlane };

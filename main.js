@@ -1,7 +1,7 @@
 import * as THREE from "./build/three.module.js";
+import { OrbitControls } from "./jsm/controls/OrbitControls.js";
 
-let scene, camera, renderer, pointLight;
-
+let scene, camera, renderer, pointLight, controls;
 //シーンを追加
 scene = new THREE.Scene();
 
@@ -22,11 +22,17 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 
 renderer.render(scene, camera);
 
+//マウス操作を設定する
+controls = new OrbitControls(camera, renderer.domElement);
+
+//テクスチャを追加
+let textures = new THREE.TextureLoader().load("./textures/earth.jpg");
+
 //ジオメトリを作成
 let ballGeometry = new THREE.SphereGeometry(100, 64, 32);
 
 //マテリアルを作成 材質やカラーを設定
-let ballMaterial = new THREE.MeshPhysicalMaterial
+let ballMaterial = new THREE.MeshPhysicalMaterial({ map: textures });
 
 //メッシュ化
 let ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);

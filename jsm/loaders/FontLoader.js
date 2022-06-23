@@ -2,7 +2,7 @@ import {
 	FileLoader,
 	Loader,
 	ShapePath
-} from 'three';
+} from '../../../build/three.module.js';
 
 class FontLoader extends Loader {
 
@@ -56,8 +56,6 @@ class FontLoader extends Loader {
 class Font {
 
 	constructor( data ) {
-
-		this.isFont = true;
 
 		this.type = 'Font';
 
@@ -192,5 +190,7 @@ function createPath( char, scale, offsetX, offsetY, data ) {
 	return { offsetX: glyph.ha * scale, path: path };
 
 }
+
+Font.prototype.isFont = true;
 
 export { FontLoader, Font };

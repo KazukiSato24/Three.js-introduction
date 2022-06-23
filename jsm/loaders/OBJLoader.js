@@ -11,9 +11,8 @@ import {
 	MeshPhongMaterial,
 	Points,
 	PointsMaterial,
-	Vector3,
-	Color
-} from 'three';
+	Vector3
+} from '../../../build/three.module.js';
 
 // o object_name | g group_name
 const _object_pattern = /^[og]\s*(.+)?/;
@@ -30,8 +29,6 @@ const _vC = new Vector3();
 
 const _ab = new Vector3();
 const _cb = new Vector3();
-
-const _color = new Color();
 
 function ParserState() {
 
@@ -539,13 +536,12 @@ class OBJLoader extends Loader {
 						);
 						if ( data.length >= 7 ) {
 
-							_color.setRGB(
+							state.colors.push(
 								parseFloat( data[ 4 ] ),
 								parseFloat( data[ 5 ] ),
 								parseFloat( data[ 6 ] )
-							).convertSRGBToLinear();
 
-							state.colors.push( _color.r, _color.g, _color.b );
+							);
 
 						} else {
 
@@ -574,7 +570,7 @@ class OBJLoader extends Loader {
 
 			} else if ( lineFirstChar === 'f' ) {
 
-				const lineData = line.slice( 1 ).trim();
+				const lineData = line.substr( 1 ).trim();
 				const vertexData = lineData.split( /\s+/ );
 				const faceVertices = [];
 
@@ -637,7 +633,7 @@ class OBJLoader extends Loader {
 
 			} else if ( lineFirstChar === 'p' ) {
 
-				const lineData = line.slice( 1 ).trim();
+				const lineData = line.substr( 1 ).trim();
 				const pointData = lineData.split( ' ' );
 
 				state.addPointGeometry( pointData );
@@ -649,8 +645,8 @@ class OBJLoader extends Loader {
 				// g group_name
 
 				// WORKAROUND: https://bugs.chromium.org/p/v8/issues/detail?id=2869
-				// let name = result[ 0 ].slice( 1 ).trim();
-				const name = ( ' ' + result[ 0 ].slice( 1 ).trim() ).slice( 1 );
+				// let name = result[ 0 ].substr( 1 ).trim();
+				const name = ( ' ' + result[ 0 ].substr( 1 ).trim() ).substr( 1 );
 
 				state.startObject( name );
 
@@ -688,6 +684,8 @@ class OBJLoader extends Loader {
 
 				/*
 					 * http://paulbourke.net/dataformats/obj/
+					 * or
+					 * http://www.cs.utah.edu/~boulos/cs3505/obj_spec.pdf
 					 *
 					 * From chapter "Grouping" Syntax explanation "s group_number":
 					 * "group_number is the smoothing group number. To turn off smoothing groups, use a value of 0 or off.

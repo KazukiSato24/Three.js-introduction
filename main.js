@@ -63,11 +63,25 @@ function init() {
   let pointLightHelper = new THREE.PointLightHelper(pointLight, 30);
   scene.add(pointLightHelper);
 
+  window.addEventListener("resize", onWindowResize);
+
   //animete関数の呼び出し
   animate();
 
 }
 
+//ブラウザのリサイズに対応させる
+function onWindowResize() {
+  //レンダラーのサイズを随時更新
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  //カメラのアスペクト比を正す
+  camera.aspect = window.innerWidth / window.innerHeight;
+
+  //カメラの値を更新した場合は必ず読み込む
+  camera.updateProjectionMatrix();
+
+}
 //ポイント光源を球の周りを巡回させよう 座標を動的にする
 function animate() {
   pointLight.position.set(
